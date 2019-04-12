@@ -63,21 +63,9 @@ contract MarketPlace
 
     function MakeOffer(uint offerPrice) public{
 
-        if (offerPrice == 0)
-        {
-            revert();
-        }
-
-        if (State != StateType.ItemAvailable)
-        {
-            revert();
-        }
-
-        if (InstanceOwner == msg.sender)
-        {
-            revert();
-        }
-
+        require(offerPrice != 0);
+        require(State == StateType.ItemAvailable);
+        require(InstanceOwner != msg.sender);
         InstanceBuyer = msg.sender;
         OfferPrice = offerPrice * (10**18);
         State = StateType.OfferPlaced;
@@ -86,27 +74,15 @@ contract MarketPlace
 
     function Reject() public{
 
-        if ( State != StateType.OfferPlaced )
-        {
-            revert();
-        }
-
-        if (InstanceOwner != msg.sender)
-        {
-            revert();
-        }
-
+        require(State == StateType.OfferPlaced);
+        require(InstanceOwner == msg.sender);
         InstanceBuyer = 0x0000000000000000000000000000000000000000;
         State = StateType.ItemAvailable;
     }
 
     function AcceptOffer() public{
 
-        if ( msg.sender != InstanceOwner )
-        {
-            revert();
-        }
-
+        require(msg.sender == InstanceOwner);
         State = StateType.OfferAccepted;
     }
 }
